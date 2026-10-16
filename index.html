@@ -19,7 +19,15 @@
   <div id="particles-bg" aria-hidden="true"></div>
 
   <!-- OBJET AUDIO INVISIBLE (lecture de 'music.mp3' déclenchée au unlockExperience) -->
-  <audio id="bg-music" src="music.mp3" preload="auto" loop style="display: none;" aria-hidden="true"></audio>
+  <audio id="bg-music" src="music.mp3?v=song" preload="auto" loop style="display: none;" aria-hidden="true"></audio>
+
+  <!-- BOUTON CONTRÔLE MUSIQUE FLOTTANT (visible en permanence pour écouter / couper la musique) -->
+  <button id="btn-music-toggle" class="btn-music-toggle paused" aria-label="Contrôle de la musique" title="Lancer / Couper la musique">
+    <span class="music-icon" id="music-icon">🎵</span>
+    <span class="music-bars" id="music-bars">
+      <span></span><span></span><span></span>
+    </span>
+  </button>
 
   <!-- ================================================================
        WRAPPER PRINCIPAL — tout ce qui est HTML/UI
