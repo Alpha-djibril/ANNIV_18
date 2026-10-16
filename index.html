@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Bonne Fête Fanta 🎂</title>
+  <meta name="description" content="Un cadeau interactif d'Alphou pour les 18 ans de Fanta." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- CANVAS THREE.JS (rendu 3D en fond, affiché après unlock) -->
+  <canvas id="three-canvas"></canvas>
+
+  <!-- FOND PARTICULES (généré en JS) -->
+  <div id="particles-bg" aria-hidden="true"></div>
+
+  <!-- ================================================================
+       WRAPPER PRINCIPAL — tout ce qui est HTML/UI
+       unlockExperience() le fera disparaître en fondu
+       ================================================================ -->
+  <div id="app">
+
+    <!-- ============================================================
+         ÉCRAN 1 : ACCUEIL
+         ============================================================ -->
+    <section id="screen-welcome" class="screen active">
+      <div class="welcome-inner">
+        <div class="deco-crown" aria-hidden="true">👑</div>
+
+        <h1 class="title-main">
+          Bonne Fête,<br />
+          <span class="name-gold">Fanta</span>
+        </h1>
+
+        <p class="subtitle">
+          Alphou a préparé quelque chose de très spécial pour toi.<br />
+          Mais d'abord… prouve que tu le connais vraiment.
+        </p>
+
+        <button id="btn-start" class="btn-gold">
+          Commencer l'aventure <span class="arrow-icon">→</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ÉCRAN 2 : QUIZ (4 questions → 4 chiffres)
+         ============================================================ -->
+    <section id="screen-quiz" class="screen">
+      <div class="quiz-inner">
+
+        <!-- Slots de chiffres -->
+        <div class="digits-bar">
+          <p class="digits-label">Code secret</p>
+          <div class="digits-row">
+            <div class="digit-slot" id="digit-0">?</div>
+            <div class="digit-slot" id="digit-1">?</div>
+            <div class="digit-slot" id="digit-2">?</div>
+            <div class="digit-slot" id="digit-3">?</div>
+          </div>
+        </div>
+
+        <!-- Barre de progression -->
+        <div class="quiz-progress">
+          <div class="progress-dots">
+            <span class="dot" id="dot-0"></span>
+            <span class="dot" id="dot-1"></span>
+            <span class="dot" id="dot-2"></span>
+            <span class="dot" id="dot-3"></span>
+          </div>
+          <p class="progress-label" id="progress-label">Question 1 / 4</p>
+        </div>
+
+        <!-- Carte question -->
+        <div class="question-card" id="question-card">
+          <p class="question-text" id="question-text"></p>
+          <div class="options-grid" id="options-grid"></div>
+          <p class="feedback-msg" id="feedback-msg"></p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ÉCRAN 3 : SAISIE DU CODE PIN (4 cases)
+         ============================================================ -->
+    <section id="screen-pin" class="screen">
+      <div class="pin-inner">
+        <div class="deco-lock" aria-hidden="true">🔐</div>
+
+        <h2 class="title-section">Code Secret</h2>
+        <p class="subtitle">
+          Tu as découvert les 4 chiffres.<br />
+          Entre-les dans le bon ordre pour déverrouiller…
+        </p>
+
+        <div class="pin-row" id="pin-row">
+          <input type="tel" inputmode="numeric" maxlength="1"
+                 class="pin-box" id="pin-0" autocomplete="off" />
+          <input type="tel" inputmode="numeric" maxlength="1"
+                 class="pin-box" id="pin-1" autocomplete="off" />
+          <input type="tel" inputmode="numeric" maxlength="1"
+                 class="pin-box" id="pin-2" autocomplete="off" />
+          <input type="tel" inputmode="numeric" maxlength="1"
+                 class="pin-box" id="pin-3" autocomplete="off" />
+        </div>
+
+        <p class="pin-error hidden" id="pin-error">Code incorrect… réessaie 💔</p>
+
+        <button class="btn-gold" id="btn-unlock">
+          Déverrouiller 🔓
+        </button>
+      </div>
+    </section>
+
+  </div><!-- /#app -->
+
+  <!-- ================================================================
+       OVERLAY DE DÉVERROUILLAGE (hors #app, toujours visible pendant fadeout)
+       ================================================================ -->
+  <div id="unlock-overlay" class="hidden">
+    <div class="unlock-content">
+      <div class="unlock-rings" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <p class="unlock-message">Déverrouillage…</p>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       CARTE FINALE : RÉVÉLATION DU CADEAU 💍
+       Affichée en bas de l'écran après l'ouverture 3D de la boîte
+       ================================================================ -->
+  <div id="final-card" class="final-card hidden">
+    <div class="final-card-inner">
+      <div class="final-sparkle">✨ 💍 ✨</div>
+      <h2 class="final-title">Joyeux 18 ans, Fanta !</h2>
+      <p class="final-text">
+        Chaque souvenir de notre histoire mène à cet instant précieux.<br />
+        Tu es et resteras toujours ma reine 👑
+      </p>
+      <p class="final-signature">Avec tout mon amour,<br /><strong>Ton Alphou ❤️</strong></p>
+      <div class="final-actions">
+        <button id="btn-replay-box" class="btn-subtle">Revoir l'ouverture ↺</button>
+      </div>
+      <p class="final-hint">💡 Astuce : Clique sur l'un des 3 bijoux pour découvrir son secret ! Fais glisser pour tourner en 3D.</p>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       MODALE DE DÉTAIL DU BIJOU (Cliquable via Raycaster Three.js)
+       ================================================================ -->
+  <div id="jewel-modal" class="jewel-modal hidden" aria-hidden="true">
+    <div class="jewel-modal-card">
+      <button class="jewel-modal-close" id="btn-close-jewel" aria-label="Fermer la modale">✕</button>
+
+      <div class="jewel-tabs">
+        <button class="jewel-tab" data-jewel="bague">💍 Bague</button>
+        <button class="jewel-tab" data-jewel="bracelet">✨ Bracelet</button>
+        <button class="jewel-tab" data-jewel="collier">💎 Collier</button>
+      </div>
+
+      <div class="jewel-modal-body">
+        <div class="jewel-modal-icon" id="jewel-icon">💍</div>
+        <p class="jewel-modal-tag" id="jewel-tag">Or Jaune & Diamant Solitaire</p>
+        <h3 class="jewel-modal-title" id="jewel-title">La Bague Solitaire</h3>
+        <p class="jewel-modal-desc" id="jewel-desc"></p>
+        <div class="jewel-modal-quote-box">
+          <p class="jewel-modal-quote" id="jewel-quote"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Three.js (r160) -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <!-- GSAP (animations fluides) -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.4/dist/gsap.min.js"></script>
+  <!-- Logique UI (quiz + PIN + unlock) -->
+  <script src="app.js?v=1710"></script>
+  <!-- Scène 3D (chargée après, expose window.openBox) -->
+  <script src="scene.js?v=1710"></script>
+</body>
+</html>

@@ -1,0 +1,842 @@
+/* ===================================================================
+   ANNIV — Fanta & Alphou | Style Principal
+   Thème : Chaleureux · Élégant · Minimaliste · Warm Dark Gold
+   =================================================================== */
+
+/* --- Variables de design --- */
+:root {
+  --bg:           #0c0907;
+  --gold:         #d4a853;
+  --gold-light:   #f0c878;
+  --gold-glow:    rgba(212, 168, 83, 0.28);
+  --gold-dim:     rgba(212, 168, 83, 0.12);
+  --card-bg:      rgba(255, 248, 228, 0.04);
+  --card-border:  rgba(212, 168, 83, 0.18);
+  --cream:        #f5e8cc;
+  --cream-dim:    rgba(245, 232, 204, 0.50);
+  --success:      #7ec88f;
+  --error:        #e06b6b;
+  --radius:       18px;
+  --font-head:    'Playfair Display', serif;
+  --font-body:    'Lato', sans-serif;
+}
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+}
+
+/* Halo doré central */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 45%,
+    rgba(212, 168, 83, 0.07) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===================================================================
+   CANVAS THREE.JS
+   =================================================================== */
+#three-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1;          /* derrière l'UI HTML, devant les particules */
+  opacity: 0;          /* invisible jusqu'au unlock */
+  pointer-events: none;
+  transition: opacity 1.4s ease;
+}
+
+/* ===================================================================
+   PARTICULES (injectées par JS)
+   =================================================================== */
+#particles-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  animation: particleTwinkle linear infinite alternate;
+}
+
+@keyframes particleTwinkle {
+  0%   { opacity: 0.08; transform: translateY(0) scale(0.8); }
+  50%  { opacity: 0.75; }
+  100% { opacity: 0.12; transform: translateY(-18px) scale(1.2); }
+}
+
+/* ===================================================================
+   APP WRAPPER & SCREENS
+   =================================================================== */
+#app {
+  position: relative;
+  z-index: 2;          /* au-dessus du canvas Three.js */
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  transform: translateY(28px);
+  pointer-events: none;
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  overflow-y: auto;
+}
+
+.screen.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+/* ===================================================================
+   TYPOGRAPHIE
+   =================================================================== */
+.title-main {
+  font-family: var(--font-head);
+  font-size: clamp(2.4rem, 9vw, 4.2rem);
+  font-weight: 700;
+  line-height: 1.18;
+  color: var(--cream);
+  text-align: center;
+}
+
+.name-gold {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.title-section {
+  font-family: var(--font-head);
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 600;
+  color: var(--cream);
+  text-align: center;
+}
+
+.subtitle {
+  font-size: clamp(0.88rem, 2.5vw, 1rem);
+  color: var(--cream-dim);
+  font-weight: 300;
+  line-height: 1.75;
+  text-align: center;
+  max-width: 400px;
+}
+
+/* ===================================================================
+   BOUTON GOLD
+   =================================================================== */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2.4rem;
+  background: linear-gradient(135deg, var(--gold) 0%, #a86e1e 100%);
+  color: #1a0e00;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 22px var(--gold-glow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  touch-action: manipulation;
+}
+
+.btn-gold:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 32px rgba(212, 168, 83, 0.45);
+}
+
+.btn-gold:active {
+  transform: scale(0.97);
+}
+
+.arrow-icon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.btn-gold:hover .arrow-icon {
+  transform: translateX(5px);
+}
+
+/* ===================================================================
+   ÉCRAN 1 — ACCUEIL
+   =================================================================== */
+.welcome-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+  max-width: 500px;
+  width: 100%;
+}
+
+.deco-crown {
+  font-size: 3.2rem;
+  animation: crownFloat 3.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(212, 168, 83, 0.6));
+}
+
+@keyframes crownFloat {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50%       { transform: translateY(-12px) rotate(4deg); }
+}
+
+/* Séparateur doré décoratif */
+.welcome-inner .title-main::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 1rem auto 0;
+}
+
+/* ===================================================================
+   ÉCRAN 2 — QUIZ
+   =================================================================== */
+.quiz-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+  width: 100%;
+  max-width: 540px;
+  padding-top: 0.5rem;
+}
+
+/* --- Slots de chiffres --- */
+.digits-bar {
+  text-align: center;
+}
+
+.digits-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  margin-bottom: 0.65rem;
+}
+
+.digits-row {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+}
+
+.digit-slot {
+  width: 54px;
+  height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-head);
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--cream-dim);
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: color 0.35s, border-color 0.35s, box-shadow 0.35s;
+}
+
+.digit-slot.revealing {
+  animation: digitFlip 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.digit-slot.revealed {
+  color: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 18px var(--gold-glow), inset 0 0 10px rgba(212,168,83,0.06);
+}
+
+@keyframes digitFlip {
+  0%   { transform: rotateX(90deg) scale(1.15); opacity: 0; }
+  60%  { transform: rotateX(-8deg) scale(1.05); opacity: 1; }
+  100% { transform: rotateX(0deg) scale(1); opacity: 1; }
+}
+
+/* --- Progression --- */
+.quiz-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.progress-dots {
+  display: flex;
+  gap: 0.55rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(245, 232, 204, 0.18);
+  transition: background 0.3s, transform 0.3s;
+}
+
+.dot.active {
+  background: var(--gold);
+  transform: scale(1.35);
+  box-shadow: 0 0 8px var(--gold-glow);
+}
+
+.dot.done {
+  background: var(--success);
+}
+
+.progress-label {
+  font-size: 0.78rem;
+  color: var(--cream-dim);
+  letter-spacing: 0.08em;
+}
+
+/* --- Carte Question --- */
+.question-card {
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  padding: 1.8rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.question-card.slide-in {
+  animation: slideInCard 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes slideInCard {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.question-text {
+  font-family: var(--font-head);
+  font-size: clamp(0.95rem, 3vw, 1.1rem);
+  color: var(--cream);
+  line-height: 1.65;
+  text-align: center;
+  font-style: italic;
+}
+
+/* --- Options --- */
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+
+.option-btn {
+  padding: 0.8rem 0.5rem;
+  min-height: 52px;
+  background: rgba(255, 248, 228, 0.04);
+  border: 1.5px solid rgba(212, 168, 83, 0.14);
+  border-radius: 12px;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s, color 0.2s;
+  touch-action: manipulation;
+}
+
+.option-btn:hover:not(:disabled) {
+  background: rgba(212, 168, 83, 0.10);
+  border-color: rgba(212, 168, 83, 0.38);
+  transform: translateY(-2px);
+}
+
+.option-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.option-btn:disabled {
+  cursor: default;
+}
+
+.option-btn.correct {
+  background: rgba(126, 200, 143, 0.14);
+  border-color: var(--success);
+  color: var(--success);
+  font-weight: 700;
+}
+
+.option-btn.incorrect {
+  background: rgba(224, 107, 107, 0.13);
+  border-color: var(--error);
+  color: var(--error);
+}
+
+/* --- Feedback message --- */
+.feedback-msg {
+  text-align: center;
+  font-size: 0.88rem;
+  min-height: 1.1em;
+  transition: opacity 0.3s;
+  line-height: 1.5;
+}
+
+.feedback-msg.feedback-success { color: var(--success); }
+.feedback-msg.feedback-error   { color: var(--error); }
+
+/* ===================================================================
+   ÉCRAN 3 — SAISIE PIN
+   =================================================================== */
+.pin-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.deco-lock {
+  font-size: 3rem;
+  animation: lockGlow 2.2s ease-in-out infinite;
+}
+
+@keyframes lockGlow {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(212,168,83,0.2)); transform: scale(1); }
+  50%       { filter: drop-shadow(0 0 16px rgba(212,168,83,0.7)); transform: scale(1.07); }
+}
+
+.pin-row {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+}
+
+.pin-box {
+  width: 62px;
+  height: 74px;
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: 14px;
+  color: var(--gold);
+  font-family: var(--font-head);
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  backdrop-filter: blur(10px);
+  -webkit-appearance: none;
+}
+
+.pin-box:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+
+.pin-error {
+  color: var(--error);
+  font-size: 0.88rem;
+  animation: fadeInDown 0.3s ease;
+}
+
+.pin-error.hidden { display: none; }
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pin-row.shake {
+  animation: shakeAnim 0.45s ease;
+}
+
+@keyframes shakeAnim {
+  0%, 100% { transform: translateX(0); }
+  18%  { transform: translateX(-9px); }
+  36%  { transform: translateX(9px); }
+  54%  { transform: translateX(-6px); }
+  72%  { transform: translateX(6px); }
+  90%  { transform: translateX(-3px); }
+}
+
+/* ===================================================================
+   OVERLAY DE DÉVERROUILLAGE
+   =================================================================== */
+#unlock-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12, 9, 7, 0.96);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.7s ease;
+}
+
+#unlock-overlay.hidden   { display: none; }
+#unlock-overlay.visible  { opacity: 1; pointer-events: all; }
+#unlock-overlay.fade-out { opacity: 0; pointer-events: none; }
+
+.unlock-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Anneaux concentriques animés */
+.unlock-rings {
+  position: relative;
+  width: 90px;
+  height: 90px;
+}
+
+.unlock-rings span {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  animation: ringExpand 2s ease-out infinite;
+}
+
+.unlock-rings span:nth-child(2) { animation-delay: 0.65s; }
+.unlock-rings span:nth-child(3) { animation-delay: 1.3s; }
+
+@keyframes ringExpand {
+  0%   { transform: scale(0.4); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.unlock-message {
+  font-family: var(--font-head);
+  font-size: 1.5rem;
+  font-style: italic;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  animation: unlockPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes unlockPulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; text-shadow: 0 0 20px var(--gold-glow); }
+}
+
+/* ===================================================================
+   CARTE FINALE RÉVÉLATION (post-ouverture de la boîte)
+   =================================================================== */
+.final-card {
+  position: fixed;
+  bottom: 1.1rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(30px);
+  width: calc(100% - 2rem);
+  max-width: 460px;
+  z-index: 100;
+  background: rgba(18, 12, 10, 0.88);
+  border: 1.5px solid var(--gold);
+  border-radius: var(--radius);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.75), 0 0 30px var(--gold-glow);
+  padding: 1.05rem 1.35rem;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+              transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.final-card.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: all;
+}
+
+.final-card-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.final-sparkle {
+  font-size: 1.8rem;
+  animation: crownFloat 3s ease-in-out infinite;
+}
+
+.final-title {
+  font-family: var(--font-head);
+  font-size: clamp(1.4rem, 4.5vw, 1.85rem);
+  color: var(--gold);
+  font-weight: 700;
+  text-shadow: 0 0 15px var(--gold-glow);
+}
+
+.final-text {
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  color: var(--cream);
+  line-height: 1.6;
+  font-weight: 300;
+  max-width: 440px;
+}
+
+.final-signature {
+  font-family: var(--font-head);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--gold-light);
+  margin-top: 0.2rem;
+}
+
+.final-actions {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-top: 0.4rem;
+}
+
+.btn-subtle {
+  padding: 0.55rem 1.3rem;
+  background: rgba(212, 168, 83, 0.12);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-subtle:hover {
+  background: var(--gold);
+  color: #1a0e00;
+  transform: scale(1.04);
+}
+
+.final-hint {
+  font-size: 0.74rem;
+  color: var(--cream-dim);
+  letter-spacing: 0.03em;
+  margin-top: 0.2rem;
+}
+
+/* ===================================================================
+   MODALE DE DÉTAIL DU BIJOU (Raycaster Three.js)
+   Reste non-bloquante : la scène 3D reste manipulable en arrière-plan
+   =================================================================== */
+.jewel-modal {
+  position: fixed;
+  bottom: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem);
+  max-width: 500px;
+  z-index: 150;
+  pointer-events: none; /* Laisse passer les clics et le drag vers la scène 3D */
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+  transform: translateX(-50%) translateY(25px);
+}
+
+.jewel-modal.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.jewel-modal-card {
+  pointer-events: all; /* Capture les clics à l'intérieur de la carte */
+  position: relative;
+  background: rgba(18, 12, 10, 0.92);
+  border: 1.5px solid var(--gold);
+  border-radius: var(--radius);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 35px var(--gold-glow);
+  padding: 1.3rem 1.6rem 1.4rem;
+  text-align: center;
+}
+
+.jewel-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.9rem;
+  background: none;
+  border: none;
+  color: var(--cream-dim);
+  font-size: 1.4rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.3rem 0.6rem;
+  border-radius: 50%;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.jewel-modal-close:hover {
+  color: var(--gold);
+  transform: scale(1.15);
+}
+
+.jewel-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(212, 168, 83, 0.18);
+  padding-bottom: 0.75rem;
+}
+
+.jewel-tab {
+  background: rgba(212, 168, 83, 0.08);
+  border: 1px solid rgba(212, 168, 83, 0.2);
+  border-radius: 20px;
+  color: var(--cream-dim);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.jewel-tab:hover {
+  background: rgba(212, 168, 83, 0.16);
+  color: var(--cream);
+  border-color: var(--gold);
+}
+
+.jewel-tab.active {
+  background: var(--gold);
+  color: #1a0e00;
+  border-color: var(--gold);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+
+.jewel-modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.jewel-modal-icon {
+  font-size: 2.2rem;
+  animation: crownFloat 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(212, 168, 83, 0.5));
+}
+
+.jewel-modal-tag {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.jewel-modal-title {
+  font-family: var(--font-head);
+  font-size: clamp(1.25rem, 4vw, 1.55rem);
+  color: var(--cream);
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.jewel-modal-desc {
+  font-size: clamp(0.82rem, 2.4vw, 0.9rem);
+  color: var(--cream);
+  line-height: 1.55;
+  font-weight: 300;
+  max-width: 440px;
+}
+
+.jewel-modal-quote-box {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  background: rgba(212, 168, 83, 0.08);
+  border-left: 2px solid var(--gold);
+  border-radius: 4px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.jewel-modal-quote {
+  font-family: var(--font-head);
+  font-size: 0.84rem;
+  font-style: italic;
+  color: var(--gold-light);
+  line-height: 1.45;
+}
+
+#three-canvas:active {
+  cursor: grabbing;
+}
+
+/* ===================================================================
+   UTILITAIRES
+   =================================================================== */
+.hidden { display: none !important; }
+
+/* ===================================================================
+   RESPONSIVE — petits écrans
+   =================================================================== */
+@media (max-width: 400px) {
+  .digit-slot  { width: 44px; height: 54px; font-size: 1.5rem; }
+  .pin-box     { width: 52px; height: 62px; font-size: 1.7rem; }
+  .options-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .question-card { padding: 1.4rem 1.1rem; }
+}
+
+@media (max-height: 650px) {
+  .quiz-inner { gap: 0.9rem; }
+  .deco-crown, .deco-lock { font-size: 2rem; }
+  .title-main { font-size: 2rem; }
+}
