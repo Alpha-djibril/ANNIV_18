@@ -31,25 +31,25 @@ const QUIZ_CONFIG = {
   // ============================================================
   questions: [
     {
-      text: "En quelle classe étais-je (Alphou) lorsque nos regards se sont croisés à l'école militaire ?",
-      options: ["3ème", "Terminale", "Seconde", "Première"],
+      text: "En quelle classe étais-je lorsque nos regards se sont croisés pour la dernière fois ?",
+      options: ["Terminale", "Deuxème année", "Seconde", "Première"],
       correctIndex: 2,           // "Seconde" ✓
       digitRevealed: "1",
-      successFeedback: "Exact ! C'était bien ma Seconde… et toi en 5ème avec ta tenue verte 🌿"
+      successFeedback: "Et oui ! Les vacances ont beaucoup compté... c'est le début de quelque chose de grand 🌿"
     },
     {
       text: "Quel jour d'octobre célèbres-tu tes 18 ans ?",
-      options: ["14 octobre", "15 octobre", "16 octobre", "17 octobre"],
+      options: ["le 14", "le 15", "le 16", "le 17"],
       correctIndex: 3,           // "17 octobre" ✓
       digitRevealed: "7",
-      successFeedback: "Le 17 octobre ! 18 ans aujourd'hui pour ma reine d'amour 👑✨"
+      successFeedback: "Le 17 octobre ! 18 ans aujourd'hui pour toi ma nègresse blonde 👑✨"
     },
     {
-      text: "À quelle heure commençait l'étude du soir où on s'est rencontrés ?",
-      options: ["17h00", "18h00", "19h00", "20h00"],
+      text: "Qui est ma star chez la famille Diakité ?",
+      options: ["Farima", "Moi (Fanta)", "Yazid", "Ton père le S"],
       correctIndex: 2,           // "19h00" ✓
       digitRevealed: "1",
-      successFeedback: "19h précises… ce moment où tout a basculé pour toujours 🕯️"
+      successFeedback: "oui… les managers des stars sont des star, et c'est toi ma préférée 🕯️"
     },
     {
       text: "De quel mois es-tu née, Fanta ?",
