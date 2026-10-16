@@ -18,6 +18,9 @@
   <!-- FOND PARTICULES (généré en JS) -->
   <div id="particles-bg" aria-hidden="true"></div>
 
+  <!-- OBJET AUDIO INVISIBLE (lecture de 'music.mp3' déclenchée au unlockExperience) -->
+  <audio id="bg-music" src="music.mp3" preload="auto" loop style="display: none;" aria-hidden="true"></audio>
+
   <!-- ================================================================
        WRAPPER PRINCIPAL — tout ce qui est HTML/UI
        unlockExperience() le fera disparaître en fondu
@@ -183,8 +186,8 @@
   <!-- GSAP (animations fluides) -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.4/dist/gsap.min.js"></script>
   <!-- Logique UI (quiz + PIN + unlock) -->
-  <script src="app.js?v=1710"></script>
+  <script src="app.js?v=music"></script>
   <!-- Scène 3D (chargée après, expose window.openBox) -->
-  <script src="scene.js?v=1710"></script>
+  <script src="scene.js?v=music"></script>
 </body>
 </html>

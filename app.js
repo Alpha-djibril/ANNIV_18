@@ -255,11 +255,73 @@ function shakePin() {
 }
 
 /* ============================================================
+   SECTION 6.1 : 🎵 GESTION DE LA MUSIQUE (HTMLAudioElement)
+   - Fichier local 'music.mp3'
+   - Respecte les politiques d'autoplay des navigateurs
+   - Déclenché lors du déverrouillage (unlockExperience)
+   - Fade-in progressif : volume de 0 à 0.6 sur 4 secondes via GSAP
+   ============================================================ */
+var bgMusic = null;
+
+function getAudioElement() {
+  if (!bgMusic) {
+    bgMusic = document.getElementById("bg-music");
+    if (!bgMusic) {
+      bgMusic = new Audio("music.mp3");
+      bgMusic.id = "bg-music";
+      bgMusic.loop = true;
+      bgMusic.preload = "auto";
+      bgMusic.style.display = "none";
+      document.body.appendChild(bgMusic);
+    }
+  }
+  return bgMusic;
+}
+
+function playBackgroundMusic() {
+  var audio = getAudioElement();
+  if (!audio) return;
+
+  // Volume initial à 0 pour préparer le fondu sonore
+  audio.volume = 0;
+
+  var playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise.then(function () {
+      // Fade-in progressif : le volume passe progressivement de 0 à 0.6 sur 4 secondes via GSAP
+      if (typeof gsap !== "undefined") {
+        gsap.to(audio, {
+          volume: 0.6,
+          duration: 4.0,
+          ease: "power1.inOut"
+        });
+      } else {
+        // Fallback doux au cas où GSAP ne serait pas présent
+        var startTime = performance.now();
+        var timer = setInterval(function () {
+          var progress = (performance.now() - startTime) / 4000;
+          if (progress >= 1) {
+            audio.volume = 0.6;
+            clearInterval(timer);
+          } else {
+            audio.volume = progress * 0.6;
+          }
+        }, 50);
+      }
+    }).catch(function (error) {
+      console.warn("Autoplay audio bloqué ou lecture impossible :", error);
+    });
+  }
+}
+
+window.playBackgroundMusic = playBackgroundMusic;
+
+/* ============================================================
    SECTION 6 : 🔓 UNLOCK EXPERIENCE
    Fonction globale déclenchée quand le PIN est correct.
 
    Séquence :
-     0.0s — overlay "Déverrouillage..." apparaît, #app fonde en sortie
+     0.0s — musique démarre avec fade-in 4s (volume 0 -> 0.6), overlay "Déverrouillage..." apparaît, #app fonde en sortie
      0.5s — canvas Three.js fonde en entrée (scène 3D visible)
      1.4s — #app masqué (display: none)
      2.0s — window.openBox() → couvercle s'ouvre (GSAP, 2s)
@@ -270,6 +332,9 @@ function unlockExperience() {
   var app      = document.getElementById("app");
   var overlay  = document.getElementById("unlock-overlay");
   var canvas3d = document.getElementById("three-canvas");
+
+  // Déclencher la lecture de la musique locale avec fade-in doux
+  playBackgroundMusic();
 
   // 1. Afficher l'overlay "Déverrouillage..." avec anneaux dorés
   overlay.classList.remove("hidden");
