@@ -19,8 +19,8 @@
   <!-- FOND PARTICULES (généré en JS) -->
   <div id="particles-bg" aria-hidden="true"></div>
 
-  <!-- OBJET AUDIO INVISIBLE (lecture de 'music.mp3' déclenchée au unlockExperience) -->
-  <audio id="bg-music" src="music.mp3?v=song" preload="auto" loop style="display: none;" aria-hidden="true"></audio>
+  <!-- OBJET AUDIO INVISIBLE (lecture de 'music.mp3' débloquée dès le premier toucher/clic) -->
+  <audio id="bg-music" src="music.mp3?v=song" preload="auto" loop playsinline webkit-playsinline style="display: none;" aria-hidden="true"></audio>
 
   <!-- BOUTON CONTRÔLE MUSIQUE FLOTTANT (visible en permanence pour écouter / couper la musique) -->
   <button id="btn-music-toggle" class="btn-music-toggle paused" aria-label="Contrôle de la musique" title="Lancer / Couper la musique">
@@ -200,8 +200,8 @@
   <!-- GSAP (animations fluides) -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.4/dist/gsap.min.js"></script>
   <!-- Logique UI (quiz + PIN + unlock) -->
-  <script src="app.js?v=touchmusic"></script>
+  <script src="app.js?v=mobileaudio"></script>
   <!-- Scène 3D (chargée après, expose window.openBox) -->
-  <script src="scene.js?v=touchmusic"></script>
+  <script src="scene.js?v=mobileaudio"></script>
 </body>
 </html>

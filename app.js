@@ -3,6 +3,10 @@
    Fanta & Alphou | Cadeau d'anniversaire interactif
    ============================================================ */
 
+// Détection universelle des écrans tactiles (Android Chrome, Samsung Internet, iOS Safari, etc.)
+const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+window.isTouchDevice = isTouchDevice;
+
 /* ============================================================
    SECTION 1 : CONFIGURATION DU QUIZ
    👉 Alphou, modifie ici les questions, les réponses correctes
@@ -309,54 +313,42 @@ function playBackgroundMusic(withFade) {
   var audio = getAudioElement();
   if (!audio) return;
 
-  var targetVolume = 0.85;
+  // Forcer le déblocage audio (unmute)
+  audio.muted = false;
 
-  if (withFade !== false) {
-    audio.volume = 0;
+  if (isTouchDevice || withFade === false) {
+    // Mobiles & écrans tactiles : aucun fade-in GSAP, volume maximal direct
+    audio.volume = 1;
+    var playPromise = audio.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(function (error) {
+        console.warn("Lecture audio reportée :", error);
+      });
+    }
+    updateMusicButtonUI();
   } else {
-    audio.volume = targetVolume;
-  }
+    // Ordinateurs de bureau : fondu progressif GSAP de 0 à 0.85
+    var targetVolume = 0.85;
+    audio.volume = 0;
+    var playPromiseDesktop = audio.play();
+    if (playPromiseDesktop && typeof playPromiseDesktop.catch === "function") {
+      playPromiseDesktop.catch(function (error) {
+        console.warn("Lecture audio reportée :", error);
+      });
+    }
+    updateMusicButtonUI();
 
-  var playPromise = audio.play();
-  if (playPromise !== undefined) {
-    playPromise.then(function () {
+    if (typeof gsap !== "undefined") {
+      gsap.to(audio, {
+        volume: targetVolume,
+        duration: 4.0,
+        ease: "power1.inOut",
+        onUpdate: updateMusicButtonUI
+      });
+    } else {
+      audio.volume = targetVolume;
       updateMusicButtonUI();
-      if (withFade !== false) {
-        if (typeof gsap !== "undefined") {
-          gsap.to(audio, {
-            volume: targetVolume,
-            duration: 4.0,
-            ease: "power1.inOut",
-            onUpdate: updateMusicButtonUI
-          });
-        } else {
-          var startTime = performance.now();
-          var timer = setInterval(function () {
-            var progress = (performance.now() - startTime) / 4000;
-            if (progress >= 1) {
-              audio.volume = targetVolume;
-              clearInterval(timer);
-              updateMusicButtonUI();
-            } else {
-              audio.volume = progress * targetVolume;
-            }
-          }, 50);
-        }
-      }
-    }).catch(function (error) {
-      console.warn("Autoplay audio bloqué ou interaction requise :", error);
-      updateMusicButtonUI();
-      // Si bloqué, on débloquera au prochain clic de l'utilisateur
-      var unlockAudio = function () {
-        audio.play().then(function() {
-          updateMusicButtonUI();
-        }).catch(function() {});
-        document.removeEventListener("click", unlockAudio);
-        document.removeEventListener("touchend", unlockAudio);
-      };
-      document.addEventListener("click", unlockAudio, { once: true });
-      document.addEventListener("touchend", unlockAudio, { once: true });
-    });
+    }
   }
 }
 
@@ -377,10 +369,11 @@ window.toggleMusic         = toggleMusic;
 window.updateMusicButtonUI = updateMusicButtonUI;
 
 /* ============================================================
-   DÉMARRAGE AUDIO AU PREMIER TOUCHER / CLIC (CONTOURNEMENT AUTOPLAY)
-   - Écouteurs globaux 'click' et 'touchstart' sur document avec { once: true }
-   - Démarre la lecture de music.mp3 avec le fade-in progressif GSAP
-   - Dès le premier contact (ex: bouton 'Commencer l'aventure'), la musique se lance
+   DÉMARRAGE AUDIO AU PREMIER TOUCHER / CLIC (CONTOURNEMENT AUTOPLAY MOBILE)
+   - Force immédiatement et de manière synchrone : audio.muted = false; audio.volume = 1;
+   - Appelle audio.play() directement dans le scope de cet événement utilisateur (sans setTimeout ni Promise)
+   - Si isTouchDevice est true : désactive complètement l'animation GSAP sur le volume (pas de fade-in)
+   - Conserve l'animation de fade-in du volume uniquement si isTouchDevice est false (desktop)
    ============================================================ */
 var audioStartedOnFirstTouch = false;
 
@@ -392,8 +385,44 @@ function onFirstUserInteraction() {
   document.removeEventListener("touchstart", onFirstUserInteraction);
 
   var audio = getAudioElement();
-  if (audio && audio.paused) {
-    playBackgroundMusic(true);
+  if (!audio) return;
+
+  // 1. Force immédiatement et de manière synchrone
+  audio.muted = false;
+  audio.volume = 1;
+
+  // 2. Appel audio.play() directement dans le scope de cet événement utilisateur (sans setTimeout ni Promise)
+  if (isTouchDevice) {
+    // Sur mobiles/tactiles : volume 1 direct, aucun fade-in GSAP
+    var pMobile = audio.play();
+    if (pMobile && typeof pMobile.catch === "function") {
+      pMobile.catch(function(err) {
+        console.warn("Lecture mobile reportée :", err);
+      });
+    }
+    updateMusicButtonUI();
+  } else {
+    // Sur ordinateurs (desktop) : fade-in progressif GSAP
+    audio.volume = 0;
+    var pDesktop = audio.play();
+    if (pDesktop && typeof pDesktop.catch === "function") {
+      pDesktop.catch(function(err) {
+        console.warn("Lecture desktop reportée :", err);
+      });
+    }
+    updateMusicButtonUI();
+
+    if (typeof gsap !== "undefined") {
+      gsap.to(audio, {
+        volume: 0.85,
+        duration: 4.0,
+        ease: "power1.inOut",
+        onUpdate: updateMusicButtonUI
+      });
+    } else {
+      audio.volume = 0.85;
+      updateMusicButtonUI();
+    }
   }
 }
 
