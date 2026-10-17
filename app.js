@@ -32,7 +32,7 @@ const QUIZ_CONFIG = {
   questions: [
     {
       text: "En quelle classe étais-je lorsque nos regards se sont croisés pour la dernière fois ?",
-      options: ["Terminale", "Deuxème année", "Seconde", "Première"],
+      options: ["Terminale", "Seconde", "Deuxème année", "Première"],
       correctIndex: 2,           // "Seconde" ✓
       digitRevealed: "1",
       successFeedback: "Et oui ! Les vacances ont beaucoup compté... c'est le début de quelque chose de grand 🌿"
@@ -46,7 +46,7 @@ const QUIZ_CONFIG = {
     },
     {
       text: "Qui est ma star chez la famille Diakité ?",
-      options: ["Farima", "Moi (Fanta)", "Yazid", "Ton père le S"],
+      options: ["Farima",  "Yazid","Moi (Fanta)", "Ton père le S"],
       correctIndex: 2,           // "19h00" ✓
       digitRevealed: "1",
       successFeedback: "oui… les managers des stars sont des star, et c'est toi ma préférée 🕯️"
