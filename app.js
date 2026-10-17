@@ -32,7 +32,7 @@ const QUIZ_CONFIG = {
   questions: [
     {
       text: "En quelle classe étais-je lorsque nos regards se sont croisés pour la dernière fois ?",
-      options: ["Terminale", "Seconde", "Deuxème année", "Première"],
+      options: ["Terminale", "Seconde", "Deuxème année", "Troisième année"],
       correctIndex: 2,           // "Seconde" ✓
       digitRevealed: "1",
       successFeedback: "Et oui ! Les vacances ont beaucoup compté... c'est le début de quelque chose de grand 🌿"
@@ -566,20 +566,20 @@ var JEWEL_DATA = {
     tag:   "Or Jaune & Diamant Solitaire",
     title: "La Bague de la Reine",
     desc:  "Forgée dans un or étincelant et surmontée d'un diamant solitaire taille brillant. Elle incarne la pureté et l'éclat inaltérable de mon engagement pour tes 18 ans et pour toujours.",
-    quote: "« Tu es mon diamant le plus rare et le plus précieux, Fanta. » — Ton Alphou ❤️"
+    quote: "« Tu es mon diamant le plus rare et le plus précieux, Fanta. » — Mr Diouf ❤️"
   },
   bracelet: {
     icon:  "✨",
     tag:   "Argent Pur & Pavé d'Éclats",
     title: "Le Jonc de Notre Histoire",
-    desc:  "Un cercle continu sans commencement ni fin. Il symbolise ce fameux soir de 2022 à 19h où nos regards se sont croisés : un lien éternel qui continue d'éclairer nos vies.",
-    quote: "« Même à des milliers de kilomètres, ce lien invisible nous unit toujours. » — Alphou ✨"
+    desc:  "Un cercle continu sans commencement ni fin. Il symbolise les fameux dates, nos étreintes, nos baisers : un lien éternel qui continue d'éclairer nos vies.",
+    quote: "« Même à des milliers de kilomètres, ce lien invisible nous unit toujours. » — Djibril ✨"
   },
   collier: {
     icon:  "💎",
     tag:   "Or Jaune & Cristal Étincelant",
     title: "Le Pendentif de Cristal",
-    desc:  "Une chaîne délicate retenant une larme de cristal pur. Destiné à reposer tout près de ton cœur, il capte chaque reflet pour célébrer la reine rayonnante que tu es.",
+    desc:  "Une chaîne délicate retenant une larme de cristal pur. Destiné à reposer tout près de ton cœur, il capte chaque reflet pour célébrer la femme rayonnante que tu es.",
     quote: "« Pour que chaque battement te rappelle à quel point tu es aimée. » — Pour l'éternité 💖"
   }
 };
