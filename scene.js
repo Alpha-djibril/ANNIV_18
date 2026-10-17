@@ -722,22 +722,28 @@
       delay: 0.8,
     });
 
-    // h) Cadrage doux et surélévation de la boîte pour faire place à la carte en bas
+    // h) Cadrage doux et surélévation de la boîte pour faire place à la modale en bas
+    var isMobile = window.innerWidth < 600;
+    var targetBoxY = isMobile ? 0.44 : 0.32;
+    var targetCamY = isMobile ? 2.65 : 2.5;
+    var targetCamZ = isMobile ? 5.10 : 4.8;
+    var targetLookY= isMobile ? 0.90 : 0.82;
+
     gsap.to(boxGroup.position, {
-      y: 0.32,
+      y: targetBoxY,
       duration: 2.2,
       delay: 0.3,
       ease: 'power2.out',
     });
 
     gsap.to(camera.position, {
-      y: 2.5,
-      z: 4.8,
+      y: targetCamY,
+      z: targetCamZ,
       duration: 2.2,
       delay: 0.3,
       ease: 'sine.inOut',
       onUpdate: function () {
-        camera.lookAt(0, 0.82, 0);
+        camera.lookAt(0, targetLookY, 0);
       }
     });
 
@@ -909,6 +915,11 @@
               { x: 1.0, y: 1.0, z: 1.0, duration: 0.55, ease: 'back.out(2.5)' }
             );
           }
+        }
+      } else {
+        // Clic sur la scène 3D en dehors de tout bijou -> Ferme instantanément la modale
+        if (typeof window.closeJewelModal === 'function') {
+          window.closeJewelModal(true);
         }
       }
     }

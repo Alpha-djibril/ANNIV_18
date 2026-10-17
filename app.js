@@ -377,11 +377,35 @@ window.toggleMusic         = toggleMusic;
 window.updateMusicButtonUI = updateMusicButtonUI;
 
 /* ============================================================
+   DÉMARRAGE AUDIO AU PREMIER TOUCHER / CLIC (CONTOURNEMENT AUTOPLAY)
+   - Écouteurs globaux 'click' et 'touchstart' sur document avec { once: true }
+   - Démarre la lecture de music.mp3 avec le fade-in progressif GSAP
+   - Dès le premier contact (ex: bouton 'Commencer l'aventure'), la musique se lance
+   ============================================================ */
+var audioStartedOnFirstTouch = false;
+
+function onFirstUserInteraction() {
+  if (audioStartedOnFirstTouch) return;
+  audioStartedOnFirstTouch = true;
+
+  document.removeEventListener("click", onFirstUserInteraction);
+  document.removeEventListener("touchstart", onFirstUserInteraction);
+
+  var audio = getAudioElement();
+  if (audio && audio.paused) {
+    playBackgroundMusic(true);
+  }
+}
+
+document.addEventListener("click", onFirstUserInteraction, { once: true });
+document.addEventListener("touchstart", onFirstUserInteraction, { once: true, passive: true });
+
+/* ============================================================
    SECTION 6 : 🔓 UNLOCK EXPERIENCE
    Fonction globale déclenchée quand le PIN est correct.
 
    Séquence :
-     0.0s — musique démarre avec fade-in 4s (volume 0 -> 0.6), overlay "Déverrouillage..." apparaît, #app fonde en sortie
+     0.0s — overlay "Déverrouillage..." apparaît, #app fonde en sortie (la musique continue déjà de jouer)
      0.5s — canvas Three.js fonde en entrée (scène 3D visible)
      1.4s — #app masqué (display: none)
      2.0s — window.openBox() → couvercle s'ouvre (GSAP, 2s)
@@ -392,9 +416,6 @@ function unlockExperience() {
   var app      = document.getElementById("app");
   var overlay  = document.getElementById("unlock-overlay");
   var canvas3d = document.getElementById("three-canvas");
-
-  // Déclencher la lecture de la musique locale avec fade-in doux
-  playBackgroundMusic();
 
   // 1. Afficher l'overlay "Déverrouillage..." avec anneaux dorés
   overlay.classList.remove("hidden");
@@ -593,20 +614,44 @@ function showJewelModal(jewelId) {
   modal.classList.add("visible");
 }
 
-function closeJewelModal() {
+function closeJewelModal(immediate) {
   var modal     = document.getElementById("jewel-modal");
   var finalCard = document.getElementById("final-card");
 
-  modal.classList.remove("visible");
-  setTimeout(function() {
+  if (!modal || modal.classList.contains("hidden")) return;
+
+  if (immediate) {
+    modal.classList.remove("visible");
     modal.classList.add("hidden");
-  }, 350);
+  } else {
+    modal.classList.remove("visible");
+    setTimeout(function() {
+      modal.classList.add("hidden");
+    }, 150);
+  }
 
   if (finalCard && finalCard.classList.contains("visible")) {
     finalCard.style.opacity = "1";
-    finalCard.style.pointerEvents = "all";
+    finalCard.style.pointerEvents = "auto";
   }
 }
+
+// Clic n'importe où en dehors de la carte du bijou pour fermer instantanément
+document.addEventListener("pointerdown", function (e) {
+  var modal = document.getElementById("jewel-modal");
+  if (!modal || modal.classList.contains("hidden") || !modal.classList.contains("visible")) return;
+
+  var card = modal.querySelector(".jewel-modal-card");
+  if (card && !card.contains(e.target)) {
+    var musicBtn = document.getElementById("btn-music-toggle");
+    if (musicBtn && musicBtn.contains(e.target)) return;
+
+    var canvas = document.getElementById("three-canvas");
+    if (e.target !== canvas) {
+      closeJewelModal(true);
+    }
+  }
+});
 
 window.showJewelModal  = showJewelModal;
 window.closeJewelModal = closeJewelModal;

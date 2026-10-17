@@ -6,9 +6,10 @@
   <title>Bonne Fête Fanta 🎂</title>
   <meta name="description" content="Un cadeau interactif d'Alphou pour les 18 ans de Fanta." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=musicon" />
+  <link rel="stylesheet" href="style.css?v=mobileopt" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
 
@@ -148,42 +149,47 @@
        CARTE FINALE : RÉVÉLATION DU CADEAU 💍
        Affichée en bas de l'écran après l'ouverture 3D de la boîte
        ================================================================ -->
-  <div id="final-card" class="final-card hidden">
-    <div class="final-card-inner">
-      <div class="final-sparkle">✨ 💍 ✨</div>
-      <h2 class="final-title">Joyeux 18 ans, Fanta !</h2>
-      <p class="final-text">
+  <!-- ================================================================
+       CARTE FINALE : RÉVÉLATION DU CADEAU 💍
+       Affichée en bas de l'écran après l'ouverture 3D de la boîte
+       ================================================================ -->
+  <div id="final-card" class="final-card fixed bottom-4 left-1/2 -translate-x-1/2 w-[90vw] max-w-sm z-[100] bg-black/40 backdrop-blur-md border border-[rgba(212,168,83,0.35)] rounded-2xl shadow-2xl p-4 sm:p-5 text-center hidden">
+    <div class="final-card-inner flex flex-col items-center gap-1.5 sm:gap-2">
+      <div class="final-sparkle text-lg sm:text-xl">✨ 💍 ✨</div>
+      <h2 class="final-title font-serif text-base sm:text-lg font-bold text-amber-300">Joyeux 18 ans, Fanta !</h2>
+      <p class="final-text text-xs text-cream/90 leading-relaxed font-light">
         Chaque souvenir de notre histoire mène à cet instant précieux.<br />
         Tu es et resteras toujours ma reine 👑
       </p>
-      <p class="final-signature">Avec tout mon amour,<br /><strong>Ton Alphou ❤️</strong></p>
-      <div class="final-actions">
-        <button id="btn-replay-box" class="btn-subtle">Revoir l'ouverture ↺</button>
+      <p class="final-signature font-serif italic text-xs text-amber-200/95">Avec tout mon amour,<br /><strong class="font-bold">Ton Alphou ❤️</strong></p>
+      <div class="final-actions mt-1">
+        <button id="btn-replay-box" class="btn-subtle py-1.5 px-3.5 text-xs">Revoir l'ouverture ↺</button>
       </div>
-      <p class="final-hint">💡 Astuce : Clique sur l'un des 3 bijoux pour découvrir son secret ! Fais glisser pour tourner en 3D.</p>
+      <p class="final-hint text-[10px] sm:text-[11px] text-cream/60 mt-1">💡 Clique sur un bijou pour son secret ! Fais glisser pour tourner en 3D.</p>
     </div>
   </div>
 
   <!-- ================================================================
        MODALE DE DÉTAIL DU BIJOU (Cliquable via Raycaster Three.js)
+       Ancrée en bas de l'écran, transparente et ultra-légère
        ================================================================ -->
-  <div id="jewel-modal" class="jewel-modal hidden" aria-hidden="true">
-    <div class="jewel-modal-card">
-      <button class="jewel-modal-close" id="btn-close-jewel" aria-label="Fermer la modale">✕</button>
+  <div id="jewel-modal" class="jewel-modal fixed bottom-4 left-1/2 -translate-x-1/2 w-[90vw] max-w-sm z-[150] pointer-events-none hidden" aria-hidden="true">
+    <div class="jewel-modal-card pointer-events-auto relative w-full bg-black/40 backdrop-blur-md border border-[rgba(212,168,83,0.35)] rounded-2xl shadow-2xl p-3.5 sm:p-4 text-center">
+      <button class="jewel-modal-close absolute top-2 right-2.5 text-cream/70 hover:text-amber-300 text-lg leading-none p-1 transition-transform hover:scale-110" id="btn-close-jewel" aria-label="Fermer la modale">✕</button>
 
-      <div class="jewel-tabs">
-        <button class="jewel-tab" data-jewel="bague">💍 Bague</button>
-        <button class="jewel-tab" data-jewel="bracelet">✨ Bracelet</button>
-        <button class="jewel-tab" data-jewel="collier">💎 Collier</button>
+      <div class="jewel-tabs flex justify-center gap-1.5 mb-2 pb-1.5 border-b border-amber-400/20">
+        <button class="jewel-tab text-[11px] font-semibold py-1 px-2.5 rounded-full transition-all" data-jewel="bague">💍 Bague</button>
+        <button class="jewel-tab text-[11px] font-semibold py-1 px-2.5 rounded-full transition-all" data-jewel="bracelet">✨ Bracelet</button>
+        <button class="jewel-tab text-[11px] font-semibold py-1 px-2.5 rounded-full transition-all" data-jewel="collier">💎 Collier</button>
       </div>
 
-      <div class="jewel-modal-body">
-        <div class="jewel-modal-icon" id="jewel-icon">💍</div>
-        <p class="jewel-modal-tag" id="jewel-tag">Or Jaune & Diamant Solitaire</p>
-        <h3 class="jewel-modal-title" id="jewel-title">La Bague Solitaire</h3>
-        <p class="jewel-modal-desc" id="jewel-desc"></p>
-        <div class="jewel-modal-quote-box">
-          <p class="jewel-modal-quote" id="jewel-quote"></p>
+      <div class="jewel-modal-body flex flex-col items-center">
+        <div class="jewel-modal-icon text-xl mb-0.5" id="jewel-icon">💍</div>
+        <p class="jewel-modal-tag text-[9px] uppercase tracking-widest font-semibold text-amber-300/90 mb-0.5" id="jewel-tag">Or Jaune & Diamant Solitaire</p>
+        <h3 class="jewel-modal-title font-serif text-sm sm:text-base font-bold text-amber-200 mb-1" id="jewel-title">La Bague Solitaire</h3>
+        <p class="jewel-modal-desc text-[11px] sm:text-xs text-cream/90 leading-relaxed font-light mb-2 max-w-[320px]" id="jewel-desc"></p>
+        <div class="jewel-modal-quote-box w-full bg-amber-400/10 border-l-2 border-amber-400/80 rounded px-2.5 py-1.5 text-left">
+          <p class="jewel-modal-quote font-serif italic text-[10px] sm:text-[11px] text-amber-100/90 leading-snug" id="jewel-quote"></p>
         </div>
       </div>
     </div>
@@ -194,8 +200,8 @@
   <!-- GSAP (animations fluides) -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.4/dist/gsap.min.js"></script>
   <!-- Logique UI (quiz + PIN + unlock) -->
-  <script src="app.js?v=musicon"></script>
+  <script src="app.js?v=touchmusic"></script>
   <!-- Scène 3D (chargée après, expose window.openBox) -->
-  <script src="scene.js?v=musicon"></script>
+  <script src="scene.js?v=touchmusic"></script>
 </body>
 </html>

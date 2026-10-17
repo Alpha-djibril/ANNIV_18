@@ -572,30 +572,30 @@ body::before {
    =================================================================== */
 .final-card {
   position: fixed;
-  bottom: 1.1rem;
+  bottom: 1rem;
   left: 50%;
-  transform: translateX(-50%) translateY(30px);
-  width: calc(100% - 2rem);
-  max-width: 460px;
+  transform: translateX(-50%) translateY(20px);
+  width: 90vw;
+  max-width: 24rem; /* max-w-sm */
   z-index: 100;
-  background: rgba(18, 12, 10, 0.88);
-  border: 1.5px solid var(--gold);
-  border-radius: var(--radius);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.75), 0 0 30px var(--gold-glow);
-  padding: 1.05rem 1.35rem;
+  background: rgba(0, 0, 0, 0.40); /* bg-black/40 */
+  border: 1px solid rgba(212, 168, 83, 0.35);
+  border-radius: 1rem;
+  backdrop-filter: blur(12px);     /* backdrop-blur-md */
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 168, 83, 0.12);
+  padding: 0.95rem 1.15rem;
   text-align: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1),
-              transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: opacity 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+              transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .final-card.visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
-  pointer-events: all;
+  pointer-events: auto;
 }
 
 .final-card-inner {
@@ -671,20 +671,19 @@ body::before {
 
 /* ===================================================================
    MODALE DE DÉTAIL DU BIJOU (Raycaster Three.js)
-   Reste non-bloquante : la scène 3D reste manipulable en arrière-plan
+   Ancrée en bas de l'écran (bottom-4), compacte et ultra-légère
    =================================================================== */
 .jewel-modal {
   position: fixed;
-  bottom: 1.2rem;
+  bottom: 1rem;
   left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 2rem);
-  max-width: 500px;
+  transform: translateX(-50%) translateY(20px);
+  width: 90vw;
+  max-width: 24rem; /* max-w-sm */
   z-index: 150;
   pointer-events: none; /* Laisse passer les clics et le drag vers la scène 3D */
   opacity: 0;
-  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
-  transform: translateX(-50%) translateY(25px);
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .jewel-modal.visible {
@@ -693,15 +692,15 @@ body::before {
 }
 
 .jewel-modal-card {
-  pointer-events: all; /* Capture les clics à l'intérieur de la carte */
+  pointer-events: auto; /* Capture les clics à l'intérieur de la carte */
   position: relative;
-  background: rgba(18, 12, 10, 0.92);
-  border: 1.5px solid var(--gold);
-  border-radius: var(--radius);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 35px var(--gold-glow);
-  padding: 1.3rem 1.6rem 1.4rem;
+  background: rgba(0, 0, 0, 0.40); /* bg-black/40 */
+  border: 1px solid rgba(212, 168, 83, 0.35);
+  border-radius: 1rem;
+  backdrop-filter: blur(12px);     /* backdrop-blur-md */
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 25px rgba(212, 168, 83, 0.15);
+  padding: 0.9rem 1.15rem;
   text-align: center;
 }
 
