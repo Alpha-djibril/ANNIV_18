@@ -258,63 +258,123 @@ function shakePin() {
    SECTION 6.1 : 🎵 GESTION DE LA MUSIQUE (HTMLAudioElement)
    - Fichier local 'music.mp3'
    - Respecte les politiques d'autoplay des navigateurs
-   - Déclenché lors du déverrouillage (unlockExperience)
-   - Fade-in progressif : volume de 0 à 0.6 sur 4 secondes via GSAP
+   - Déclenché lors du déverrouillage (unlockExperience) ou via le bouton
+   - Fade-in progressif : volume de 0 à 0.85 sur 4 secondes via GSAP
    ============================================================ */
 var bgMusic = null;
+var audioInitialized = false;
 
 function getAudioElement() {
   if (!bgMusic) {
     bgMusic = document.getElementById("bg-music");
     if (!bgMusic) {
-      bgMusic = new Audio("music.mp3");
+      bgMusic = new Audio("music.mp3?v=song");
       bgMusic.id = "bg-music";
       bgMusic.loop = true;
       bgMusic.preload = "auto";
       bgMusic.style.display = "none";
       document.body.appendChild(bgMusic);
     }
+
+    if (!audioInitialized) {
+      audioInitialized = true;
+      bgMusic.addEventListener("play", updateMusicButtonUI);
+      bgMusic.addEventListener("pause", updateMusicButtonUI);
+      bgMusic.addEventListener("volumechange", updateMusicButtonUI);
+    }
   }
   return bgMusic;
 }
 
-function playBackgroundMusic() {
+function updateMusicButtonUI() {
+  var btn = document.getElementById("btn-music-toggle");
+  var icon = document.getElementById("music-icon");
+  var audio = getAudioElement();
+  if (!btn || !audio) return;
+
+  if (!audio.paused && audio.volume > 0.05) {
+    btn.classList.add("playing");
+    btn.classList.remove("paused");
+    if (icon) icon.textContent = "🎵";
+    btn.setAttribute("title", "Musique en cours (cliquer pour couper)");
+  } else {
+    btn.classList.remove("playing");
+    btn.classList.add("paused");
+    if (icon) icon.textContent = "🔇";
+    btn.setAttribute("title", "Musique en pause (cliquer pour écouter)");
+  }
+}
+
+function playBackgroundMusic(withFade) {
   var audio = getAudioElement();
   if (!audio) return;
 
-  // Volume initial à 0 pour préparer le fondu sonore
-  audio.volume = 0;
+  var targetVolume = 0.85;
+
+  if (withFade !== false) {
+    audio.volume = 0;
+  } else {
+    audio.volume = targetVolume;
+  }
 
   var playPromise = audio.play();
   if (playPromise !== undefined) {
     playPromise.then(function () {
-      // Fade-in progressif : le volume passe progressivement de 0 à 0.6 sur 4 secondes via GSAP
-      if (typeof gsap !== "undefined") {
-        gsap.to(audio, {
-          volume: 0.6,
-          duration: 4.0,
-          ease: "power1.inOut"
-        });
-      } else {
-        // Fallback doux au cas où GSAP ne serait pas présent
-        var startTime = performance.now();
-        var timer = setInterval(function () {
-          var progress = (performance.now() - startTime) / 4000;
-          if (progress >= 1) {
-            audio.volume = 0.6;
-            clearInterval(timer);
-          } else {
-            audio.volume = progress * 0.6;
-          }
-        }, 50);
+      updateMusicButtonUI();
+      if (withFade !== false) {
+        if (typeof gsap !== "undefined") {
+          gsap.to(audio, {
+            volume: targetVolume,
+            duration: 4.0,
+            ease: "power1.inOut",
+            onUpdate: updateMusicButtonUI
+          });
+        } else {
+          var startTime = performance.now();
+          var timer = setInterval(function () {
+            var progress = (performance.now() - startTime) / 4000;
+            if (progress >= 1) {
+              audio.volume = targetVolume;
+              clearInterval(timer);
+              updateMusicButtonUI();
+            } else {
+              audio.volume = progress * targetVolume;
+            }
+          }, 50);
+        }
       }
     }).catch(function (error) {
-      console.warn("Autoplay audio bloqué ou lecture impossible :", error);
+      console.warn("Autoplay audio bloqué ou interaction requise :", error);
+      updateMusicButtonUI();
+      // Si bloqué, on débloquera au prochain clic de l'utilisateur
+      var unlockAudio = function () {
+        audio.play().then(function() {
+          updateMusicButtonUI();
+        }).catch(function() {});
+        document.removeEventListener("click", unlockAudio);
+        document.removeEventListener("touchend", unlockAudio);
+      };
+      document.addEventListener("click", unlockAudio, { once: true });
+      document.addEventListener("touchend", unlockAudio, { once: true });
     });
   }
 }
 
+function toggleMusic() {
+  var audio = getAudioElement();
+  if (!audio) return;
+
+  if (audio.paused) {
+    playBackgroundMusic(false);
+  } else {
+    audio.pause();
+    updateMusicButtonUI();
+  }
+}
+
 window.playBackgroundMusic = playBackgroundMusic;
+window.toggleMusic         = toggleMusic;
+window.updateMusicButtonUI = updateMusicButtonUI;
 
 /* ============================================================
    SECTION 6 : 🔓 UNLOCK EXPERIENCE
@@ -467,6 +527,12 @@ document.addEventListener("DOMContentLoaded", function() {
   window.addEventListener("keydown", function(e) {
     if (e.key === "Escape") closeJewelModal();
   });
+
+  // Bouton Musique Flottant (Toggle Play / Pause)
+  var musicToggleBtn = document.getElementById("btn-music-toggle");
+  if (musicToggleBtn) {
+    musicToggleBtn.addEventListener("click", toggleMusic);
+  }
 
 });
 
